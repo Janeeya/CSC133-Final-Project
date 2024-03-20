@@ -140,7 +140,7 @@ class SnakeGame extends SurfaceView implements Runnable{
 
         // Check if the snake ate the apple
         if(mSnake.checkDinner(mApple.getLocation())){
-            mApple.spawn();
+            mApple.spawn(2);
 
             mScore = mScore + 1;
 
@@ -165,7 +165,8 @@ class SnakeGame extends SurfaceView implements Runnable{
 
             Drawable d = getResources().getDrawable(R.drawable.background, null);
             d.setBounds(0, 0, mCanvas.getWidth(), mCanvas.getHeight());
-            d.draw(mCanvas);
+
+            drawScore();
 
             mApple.draw(mCanvas, mPaint);
             mSnake.draw(mCanvas, mPaint);
@@ -176,6 +177,12 @@ class SnakeGame extends SurfaceView implements Runnable{
             // Unlock the mCanvas and reveal the graphics for this frame
             mSurfaceHolder.unlockCanvasAndPost(mCanvas);
         }
+    }
+
+    private void drawScore() {
+        mPaint.setColor(Color.argb(255, 255, 255, 255));
+        mPaint.setTextSize(120);
+        mCanvas.drawText("" + mScore, 20, 120, mPaint);
     }
 
     private void drawName() {

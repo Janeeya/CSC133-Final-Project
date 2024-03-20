@@ -11,7 +11,7 @@ import android.view.MotionEvent;
 
 import java.util.ArrayList;
 
-class Snake {
+class Snake extends GameObject implements IDrawable, IMoveable {
 
     private ArrayList<Point> segmentLocations;
 
@@ -40,6 +40,7 @@ class Snake {
 
 
     Snake(Context context, Point mr, int ss) {
+        super(context, mr, ss);
 
         segmentLocations = new ArrayList<>();
 
@@ -114,7 +115,7 @@ class Snake {
     }
 
 
-    void move() {
+    public void move() {
         // Start at the back and move it
         // to the position of the segment in front of it
         for (int i = segmentLocations.size() - 1; i > 0; i--) {
@@ -183,7 +184,7 @@ class Snake {
         return false;
     }
 
-    void draw(Canvas canvas, Paint paint) {
+    public void draw(Canvas canvas, Paint paint) {
 
         if (!segmentLocations.isEmpty()) {
             // Draw the head
