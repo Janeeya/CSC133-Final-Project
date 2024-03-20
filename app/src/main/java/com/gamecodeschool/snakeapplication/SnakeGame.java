@@ -167,29 +167,12 @@ class SnakeGame extends SurfaceView implements Runnable{
             d.setBounds(0, 0, mCanvas.getWidth(), mCanvas.getHeight());
             d.draw(mCanvas);
 
-            mCanvas.drawColor(Color.argb(255, 26, 128, 182));
-
-            mPaint.setColor(Color.argb(255, 255, 255, 255));
-            mPaint.setTextSize(120);
-
-            mCanvas.drawText("" + mScore, 20, 120, mPaint);
-
             mApple.draw(mCanvas, mPaint);
             mSnake.draw(mCanvas, mPaint);
 
             drawName();
-
-            // Draw some text while paused
-            if(mPaused){
-
-                mPaint.setColor(Color.argb(255, 255, 255, 255));
-                mPaint.setTextSize(250);
-
-                mCanvas.drawText(getResources().
-                                getString(R.string.tap_to_play),
-                        200, 700, mPaint);
-            }
-
+            drawTapToPlay();
+            drawPauseButton(mCanvas, mPaint);
             // Unlock the mCanvas and reveal the graphics for this frame
             mSurfaceHolder.unlockCanvasAndPost(mCanvas);
         }
@@ -202,6 +185,33 @@ class SnakeGame extends SurfaceView implements Runnable{
                         getString(R.string.player_names),
                 1350, 150, mPaint);
     }
+
+    private void drawTapToPlay() {
+        if (mPaused) {
+            mPaint.setColor(Color.argb(255, 255, 255, 255));
+            mPaint.setTextSize(250);
+            mCanvas.drawText(getResources().
+                            getString(R.string.tap_to_play),
+                    200, 700, mPaint);
+        }
+    }
+    public void drawPauseButton(Canvas canvas, Paint paint) {
+        int pauseButtonWidth = 350;
+        int pauseButtonHeight = 140;
+        int pauseButtonX = 500;
+        int pauseButtonY = 50;
+
+        // Draw button background
+        paint.setColor(Color.argb(200, 0, 0, 0)); // Black with transparency
+        canvas.drawRect(pauseButtonX, pauseButtonY,
+                pauseButtonX + pauseButtonWidth, pauseButtonY + pauseButtonHeight, paint);
+
+        // Draw the word "Pause" on the button
+        paint.setColor(Color.argb(255, 255, 255, 255)); // White
+        paint.setTextSize(120);
+        canvas.drawText("Pause", pauseButtonX + 30, pauseButtonY + 110, paint);
+    }
+
 
     @Override
     public boolean onTouchEvent(MotionEvent motionEvent) {
