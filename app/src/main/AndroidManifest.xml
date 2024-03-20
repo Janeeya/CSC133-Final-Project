@@ -7,8 +7,8 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
-        android:supportsRtl="true"
-        android:theme="@style/Theme.SnakeApplication">
+        android:theme="@style/Theme.SnakeApplication"
+        android:supportsRtl="true">
         <activity android:name=".SnakeActivity"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
             android:screenOrientation="landscape"

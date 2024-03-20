@@ -165,8 +165,9 @@ class SnakeGame extends SurfaceView implements Runnable{
         if (mSurfaceHolder.getSurface().isValid()) {
             mCanvas = mSurfaceHolder.lockCanvas();
 
-            Drawable d = getResources().getDrawable(R.drawable.background, null);
-            d.setBounds(0, 0, mCanvas.getWidth(), mCanvas.getHeight());
+            Drawable background = getResources().getDrawable(R.drawable.background, null);
+            background.setBounds(0, 0, mCanvas.getWidth(), mCanvas.getHeight());
+            background.draw(mCanvas);
 
             drawScore();
 
