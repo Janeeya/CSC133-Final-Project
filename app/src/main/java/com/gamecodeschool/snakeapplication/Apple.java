@@ -10,25 +10,19 @@ import java.util.Random;
 
 class Apple {
 
-    // The location of the apple on the grid
-    // Not in pixels
+    // location of apple not in pixels
     private Point location = new Point();
 
-    // The range of values we can choose from
-    // to spawn an apple
     private Point mSpawnRange;
     private int mSize;
 
     // An image to represent the apple
     private Bitmap mBitmapApple;
 
-    /// Set up the apple in the constructor
-    Apple(Context context, Point sr, int s){
+    Apple(Context context, Point sr, int size){
 
-        // Make a note of the passed in spawn range
         mSpawnRange = sr;
-        // Make a note of the size of an apple
-        mSize = s;
+        mSize = size;
         // Hide the apple off-screen until the game starts
         location.x = -10;
 
@@ -36,7 +30,7 @@ class Apple {
         mBitmapApple = BitmapFactory.decodeResource(context.getResources(), R.drawable.apple);
 
         // Resize the bitmap
-        mBitmapApple = Bitmap.createScaledBitmap(mBitmapApple, s, s, false);
+        mBitmapApple = Bitmap.createScaledBitmap(mBitmapApple, size, size, false);
     }
 
     // This is called every time an apple is eaten
