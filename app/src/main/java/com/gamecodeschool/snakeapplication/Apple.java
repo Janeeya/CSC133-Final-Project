@@ -19,11 +19,11 @@ class Apple extends GameObject implements IDrawable {
     // An image to represent the apple
     private Bitmap mBitmapApple;
 
-    Apple(Context context, Point sr, int size){
-        super(context, sr, size);
+    Apple(Context context, Point sr, int s){
+        super(context, sr, s);
 
         mSpawnRange = sr;
-        mSize = size;
+        mSize = s;
         // Hide the apple off-screen until the game starts
         location.x = -10;
 
@@ -31,7 +31,7 @@ class Apple extends GameObject implements IDrawable {
         mBitmapApple = BitmapFactory.decodeResource(context.getResources(), R.drawable.apple);
 
         // Resize the bitmap
-        mBitmapApple = Bitmap.createScaledBitmap(mBitmapApple, size, size, false);
+        mBitmapApple = Bitmap.createScaledBitmap(mBitmapApple, s, s, false);
     }
 
     // This is called every time an apple is eaten

@@ -7,6 +7,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.media.AudioAttributes;
 import android.media.AudioManager;
@@ -35,7 +36,7 @@ class SnakeGame extends SurfaceView implements Runnable{
     private Paint mPaint;
     private Snake mSnake;
     private Apple mApple;
-
+    private Typeface plain = Typeface.createFromAsset(getContext().getAssets(), "lobstertwo_regular.ttf");
 
     public SnakeGame(Context context, Point size) {
         super(context);
@@ -74,6 +75,7 @@ class SnakeGame extends SurfaceView implements Runnable{
         // Initialize the drawing objects
         mSurfaceHolder = getHolder();
         mPaint = new Paint();
+        mPaint.setTypeface(plain);
 
         mApple = new Apple(context,
                 new Point(NUM_BLOCKS_WIDE,
