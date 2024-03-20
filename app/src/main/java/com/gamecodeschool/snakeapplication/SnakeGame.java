@@ -225,6 +225,30 @@ class SnakeGame extends SurfaceView implements Runnable{
 
     @Override
     public boolean onTouchEvent(MotionEvent motionEvent) {
+
+        int left = 500;
+        int right = 850;
+        int top = 75;
+        int bottom = 200;
+
+        double xTouchPosition = motionEvent.getAxisValue(0);
+        double yTouchPosition = motionEvent.getAxisValue(1);
+
+        if (xTouchPosition >= left && xTouchPosition <= right &&
+                yTouchPosition >= top && yTouchPosition <= bottom &&
+                motionEvent.getAction() == MotionEvent.ACTION_UP) {
+            if (mPlaying) {
+                pause();
+            } else {
+                resume();
+            }
+            return true;
+        }
+
+        if (!mPlaying) {
+            return true;
+        }
+
         switch (motionEvent.getAction() & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_UP:
                 if (mPaused) {
