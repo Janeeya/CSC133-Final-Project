@@ -50,20 +50,20 @@ class Snake extends GameObject implements IDrawable, IMoveable {
         // Create and scale the bitmaps
         mBitmapHeadRight = BitmapFactory
                 .decodeResource(context.getResources(),
-                        R.drawable.head);
+                        R.drawable.shiba);
 
         // Create 3 more versions of the head for different headings
         mBitmapHeadLeft = BitmapFactory
                 .decodeResource(context.getResources(),
-                        R.drawable.head);
+                        R.drawable.shiba);
 
         mBitmapHeadUp = BitmapFactory
                 .decodeResource(context.getResources(),
-                        R.drawable.head);
+                        R.drawable.shiba);
 
         mBitmapHeadDown = BitmapFactory
                 .decodeResource(context.getResources(),
-                        R.drawable.head);
+                        R.drawable.shiba);
 
         // Modify the bitmaps to face the snake head
         // in the correct direction
@@ -94,7 +94,7 @@ class Snake extends GameObject implements IDrawable, IMoveable {
         // Create and scale the body
         mBitmapBody = BitmapFactory
                 .decodeResource(context.getResources(),
-                        R.drawable.body);
+                        R.drawable.bread);
 
         mBitmapBody = Bitmap
                 .createScaledBitmap(mBitmapBody,

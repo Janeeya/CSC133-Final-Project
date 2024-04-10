@@ -165,7 +165,7 @@ class SnakeGame extends SurfaceView implements Runnable{
         if (mSurfaceHolder.getSurface().isValid()) {
             mCanvas = mSurfaceHolder.lockCanvas();
 
-            Drawable background = getResources().getDrawable(R.drawable.background, null);
+            Drawable background = getResources().getDrawable(R.drawable.cafe, null);
             background.setBounds(0, 0, mCanvas.getWidth(), mCanvas.getHeight());
             background.draw(mCanvas);
 
@@ -174,7 +174,7 @@ class SnakeGame extends SurfaceView implements Runnable{
             mApple.draw(mCanvas, mPaint);
             mSnake.draw(mCanvas, mPaint);
 
-            drawName();
+            //drawName();
             drawTapToPlay();
             drawPauseButton(mCanvas, mPaint);
             // Unlock the mCanvas and reveal the graphics for this frame
@@ -188,14 +188,14 @@ class SnakeGame extends SurfaceView implements Runnable{
         mCanvas.drawText("" + mScore, 20, 120, mPaint);
     }
 
-    private void drawName() {
+   /* private void drawName() {
         mPaint.setColor(Color.argb(255, 255, 255, 255));
         mPaint.setTextSize(120);
         mCanvas.drawText(getResources().
                         getString(R.string.player_names),
                 1350, 150, mPaint);
     }
-
+*/
     private void drawTapToPlay() {
         if (mPaused) {
             mPaint.setColor(Color.argb(255, 255, 255, 255));
