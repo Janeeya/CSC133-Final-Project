@@ -19,6 +19,9 @@ import android.view.SurfaceView;
 import java.io.IOException;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.Toast;
 
 
 class SnakeGame extends SurfaceView implements Runnable{
@@ -39,7 +42,7 @@ class SnakeGame extends SurfaceView implements Runnable{
     private Snake mSnake;
     private Apple mApple;
     private Typeface plain = Typeface.createFromAsset(getContext().getAssets(), "lobstertwo_regular.ttf");
-    private String mPlayerName = ""; // Store player's name
+    private String mPlayerName = "";
     private Typeface mTypeface;
 
     public SnakeGame(Context context, Point size) {
@@ -80,7 +83,6 @@ class SnakeGame extends SurfaceView implements Runnable{
 
         } catch (IOException e) {
         }
-
         // Initialize the drawing objects
         mSurfaceHolder = getHolder();
         mPaint = new Paint();
@@ -95,45 +97,64 @@ class SnakeGame extends SurfaceView implements Runnable{
                 new Point(NUM_BLOCKS_WIDE,
                         mNumBlocksHigh),
                 blockSize);
-
     }
 
     public void newGame() {
-
         mSnake.reset(NUM_BLOCKS_WIDE, mNumBlocksHigh);
-
         mApple.spawn();
-
         mScore = 0;
-
         // Setup mNextFrameTime so an update can triggered
         mNextFrameTime = System.currentTimeMillis();
     }
 
-    private void showNameInput(Context context) {
+    private void showNameInput(final Context context) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle("Enter Your Name");
 
-        final androidx.appcompat.widget.AppCompatEditText input = new androidx.appcompat.widget.AppCompatEditText(context);
-        input.setTypeface(mTypeface); // Use your custom font
+        final EditText input = new EditText(context);
+
+        input.setTextSize(18);
+        input.setBackgroundColor(Color.LTGRAY);
+        input.setTypeface(mTypeface);
+
         builder.setView(input);
 
+        // Set up the "OK" button to handle input
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                mPlayerName = input.getText().toString().trim();
-                dialog.dismiss();
-            }
-        });
-        builder.setNegativeButton("Clear", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                input.setText("");
+                String playerName = input.getText().toString().trim();
+                if (!playerName.isEmpty()) {
+                    mPlayerName = playerName;
+                    drawTapToPlay(); // Start the game logic
+                } else {
+                    Toast.makeText(context, "Please enter your name", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
+        // Prevent dismiss by tapping outside of the dialog
         builder.setCancelable(false);
-        builder.show();
+
+        // Create and show the dialog
+        final AlertDialog dialog = builder.create();
+        dialog.show();
+
+        // Override the "OK" button click listener to prevent dismissal without valid input
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Capture the input and handle it manually
+                String playerName = input.getText().toString().trim();
+                if (!playerName.isEmpty()) {
+                    mPlayerName = playerName;
+                    dialog.dismiss();
+                    drawTapToPlay();
+                } else {
+                    Toast.makeText(context, "Please enter your name", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     @Override
@@ -145,7 +166,6 @@ class SnakeGame extends SurfaceView implements Runnable{
                     update();
                 }
             }
-
             draw();
         }
     }
@@ -163,10 +183,8 @@ class SnakeGame extends SurfaceView implements Runnable{
 
             return true;
         }
-
         return false;
     }
-
 
     public void update() {
 
@@ -190,7 +208,6 @@ class SnakeGame extends SurfaceView implements Runnable{
         }
 
     }
-
     public void draw() {
         // Get a lock on the mCanvas
         if (mSurfaceHolder.getSurface().isValid()) {
@@ -210,8 +227,8 @@ class SnakeGame extends SurfaceView implements Runnable{
             mSnake.draw(mCanvas, mPaint);
 
             // Draw player's name at the top right corner
-            mPaint.setColor(Color.BLACK);
-            mPaint.setTextSize(50);
+            mPaint.setColor(Color.BLUE);
+            mPaint.setTextSize(80);
             mPaint.setTypeface(mTypeface);
             mCanvas.drawText(mPlayerName, mCanvas.getWidth() - 300, 100, mPaint);
 
@@ -223,22 +240,11 @@ class SnakeGame extends SurfaceView implements Runnable{
             mSurfaceHolder.unlockCanvasAndPost(mCanvas);
         }
     }
-
-
     private void drawScore() {
         mPaint.setColor(Color.argb(255, 255, 255, 255));
         mPaint.setTextSize(120);
         mCanvas.drawText("" + mScore, 20, 120, mPaint);
     }
-
-    /* private void drawName() {
-         mPaint.setColor(Color.argb(255, 255, 255, 255));
-         mPaint.setTextSize(120);
-         mCanvas.drawText(getResources().
-                         getString(R.string.player_names),
-                 1350, 150, mPaint);
-     }
- */
     private void drawTapToPlay() {
         if (mPaused) {
             mPaint.setColor(Color.BLUE);
