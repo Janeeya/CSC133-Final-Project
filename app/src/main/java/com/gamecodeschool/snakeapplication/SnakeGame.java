@@ -1,5 +1,6 @@
 package com.gamecodeschool.snakeapplication;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
@@ -13,10 +14,16 @@ import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import java.io.IOException;
+import java.util.Timer;
+import java.util.TimerTask;
+
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.view.View;
@@ -44,9 +51,12 @@ class SnakeGame extends SurfaceView implements Runnable{
     private Typeface plain = Typeface.createFromAsset(getContext().getAssets(), "lobstertwo_regular.ttf");
     private String mPlayerName = "";
     private Typeface mTypeface;
+    private HighScore mHighScore;
 
     public SnakeGame(Context context, Point size) {
         super(context);
+
+        mHighScore = new HighScore(context);
 
         int blockSize = size.x / NUM_BLOCKS_WIDE;
         mNumBlocksHigh = size.y / blockSize;
@@ -186,42 +196,34 @@ class SnakeGame extends SurfaceView implements Runnable{
         return false;
     }
 
+    // Inside the update() method
     public void update() {
-
         mSnake.move();
 
         // Check if the snake ate the apple
-        if(mSnake.checkDinner(mApple.getLocation())){
+        if (mSnake.checkDinner(mApple.getLocation())) {
             mApple.spawn(2);
-
-            mScore = mScore + 1;
-
-            mSP.play(mEat_ID, 1, 1, 0, 0, 1);
+            mScore++;
+            mSP.play(mEat_ID, 1, 1, 0, 0, 1); // Play the eating sound
         }
 
         // Check if snake died
         if (mSnake.detectDeath()) {
-            // Pause the game ready to start again
-            mSP.play(mCrashID, 1, 1, 0, 0, 1);
+            mSP.play(mCrashID, 1, 1, 0, 0, 1); // Play the crash sound
+            mPaused = true;
 
-            mPaused =true;
+            //dramGameOver();
         }
-
     }
     public void draw() {
-        // Get a lock on the mCanvas
         if (mSurfaceHolder.getSurface().isValid()) {
             mCanvas = mSurfaceHolder.lockCanvas();
-
-            // Clear canvas with a background color (assuming black for simplicity)
             mCanvas.drawColor(Color.BLACK);
 
-            // Draw background image
             Drawable background = getResources().getDrawable(R.drawable.cafe, null);
             background.setBounds(0, 0, mCanvas.getWidth(), mCanvas.getHeight());
             background.draw(mCanvas);
 
-            // Draw game elements (score, apple, snake)
             drawScore();
             mApple.draw(mCanvas, mPaint);
             mSnake.draw(mCanvas, mPaint);
@@ -232,16 +234,17 @@ class SnakeGame extends SurfaceView implements Runnable{
             mPaint.setTypeface(mTypeface);
             mCanvas.drawText(mPlayerName, mCanvas.getWidth() - 300, 100, mPaint);
 
-            // Draw tap to play and pause button
             drawTapToPlay();
             drawPauseButton(mCanvas, mPaint);
 
+            drawHighScore();
             // Unlock the mCanvas and reveal the graphics for this frame
             mSurfaceHolder.unlockCanvasAndPost(mCanvas);
         }
     }
+
     private void drawScore() {
-        mPaint.setColor(Color.argb(255, 255, 255, 255));
+        mPaint.setColor(Color.RED);
         mPaint.setTextSize(120);
         mCanvas.drawText("" + mScore, 20, 120, mPaint);
     }
@@ -270,7 +273,20 @@ class SnakeGame extends SurfaceView implements Runnable{
         paint.setTextSize(120);
         canvas.drawText("Pause", pauseButtonX + 30, pauseButtonY + 110, paint);
     }
+    private void drawHighScore() {
+        int highScore = mHighScore.getHighScore();
+        mPaint.setColor(Color.RED);
+        mPaint.setTextSize(80);
+        mCanvas.drawText("High Score: " + highScore, 20, 220, mPaint);
+    }
 
+    public void resetGame() {
+        // Reset the snake to its initial position
+        mSnake.reset(NUM_BLOCKS_WIDE, mNumBlocksHigh);
+        mApple.spawn();
+        mScore = 0;
+        mPaused = true;
+    }
 
     @Override
     public boolean onTouchEvent(MotionEvent motionEvent) {
