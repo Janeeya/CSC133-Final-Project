@@ -212,7 +212,7 @@ class SnakeGame extends SurfaceView implements Runnable{
             mSP.play(mCrashID, 1, 1, 0, 0, 1); // Play the crash sound
             mPaused = true;
 
-            //dramGameOver();
+            dramGameOver();
         }
     }
     public void draw() {
@@ -242,7 +242,40 @@ class SnakeGame extends SurfaceView implements Runnable{
             mSurfaceHolder.unlockCanvasAndPost(mCanvas);
         }
     }
+    private void dramGameOver() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Game Over");
 
+        String message;
+        // Determine message based on high score status
+        if (mHighScore.isNewHighScore(mScore)) {
+            builder.setMessage("New High Score: " + mScore);
+        } else {
+            builder.setMessage("Score: " + mScore);
+        }
+
+        builder.setPositiveButton("Play Again", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                resetGame();
+                mPaused = false; // Continue the game
+            }
+        });
+
+        builder.setNegativeButton("Exit Game", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                ((Activity) getContext()).finish();
+            }
+        });
+
+        ((Activity) getContext()).runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                builder.create().show();
+            }
+        });
+    }
     private void drawScore() {
         mPaint.setColor(Color.RED);
         mPaint.setTextSize(120);
