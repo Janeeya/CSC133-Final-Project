@@ -1,27 +1,41 @@
 package com.gamecodeschool.snakeapplication;
 import android.content.Context;
 import android.content.SharedPreferences;
+
 public class HighScore {
     private static final String PREF_NAME = "SnakeHighScores";
     private static final String KEY_HIGH_SCORE = "high_score";
 
-    private SharedPreferences mSharedPreferences;
+    private final SharedPreferences sharedPreferences;
+    private int highScore;
 
     public HighScore(Context context) {
-        mSharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        loadHighScore();
+    }
+
+    private void loadHighScore() {
+        highScore = sharedPreferences.getInt(KEY_HIGH_SCORE, 0);
     }
 
     public int getHighScore() {
-        return mSharedPreferences.getInt(KEY_HIGH_SCORE, 0);
+        return highScore;
     }
 
     public void setHighScore(int score) {
-        SharedPreferences.Editor editor = mSharedPreferences.edit();
-        editor.putInt(KEY_HIGH_SCORE, score);
+        if (isNewHighScore(score)) {
+            highScore = score;
+            saveHighScore();
+        }
+    }
+
+    private void saveHighScore() {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt(KEY_HIGH_SCORE, highScore);
         editor.apply();
     }
 
     public boolean isNewHighScore(int score) {
-        return score > getHighScore();
+        return score > highScore;
     }
 }
