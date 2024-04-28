@@ -249,8 +249,10 @@ class SnakeGame extends SurfaceView implements Runnable{
         builder.setTitle("Game Over");
 
         String message;
-        // Determine message based on high score status
-        if (mHighScore.isNewHighScore(mScore)) {
+        boolean isNewHighScore = mHighScore.isNewHighScore(mScore);
+        if (isNewHighScore) {
+            // If it's a new high score, update the high score and show a corresponding message
+            mHighScore.setHighScore(mScore);
             builder.setMessage("New High Score: " + mScore);
         } else {
             builder.setMessage("Score: " + mScore);
