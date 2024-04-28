@@ -31,6 +31,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 
+
 class SnakeGame extends SurfaceView implements Runnable{
 
     private Thread mThread = null;
@@ -177,6 +178,7 @@ class SnakeGame extends SurfaceView implements Runnable{
                 }
             }
             draw();
+
         }
     }
 
@@ -375,6 +377,7 @@ class SnakeGame extends SurfaceView implements Runnable{
             mThread.join();
         } catch (InterruptedException e) {
         }
+
     }
 
 
