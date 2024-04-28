@@ -34,15 +34,11 @@ import android.widget.Toast;
 class SnakeGame extends SurfaceView implements Runnable{
 
     private Thread mThread = null;
-    private long mNextFrameTime;
-    private volatile boolean mPlaying = false;
-    private volatile boolean mPaused = true;
     private SoundPool mSP;
     private int mEat_ID = -1;
     private int mCrashID = -1;
     private final int NUM_BLOCKS_WIDE = 40;
     private int mNumBlocksHigh;
-    private int mScore;
     private Canvas mCanvas;
     private SurfaceHolder mSurfaceHolder;
     private Paint mPaint;
@@ -51,12 +47,13 @@ class SnakeGame extends SurfaceView implements Runnable{
     private Typeface plain = Typeface.createFromAsset(getContext().getAssets(), "lobstertwo_regular.ttf");
     private String mPlayerName = "";
     private Typeface mTypeface;
-    private HighScore mHighScore;
+    private GameState gameState;
+    private long mNextFrameTime;
 
     public SnakeGame(Context context, Point size) {
         super(context);
 
-        mHighScore = new HighScore(context);
+        gameState = new GameState(context);
 
         int blockSize = size.x / NUM_BLOCKS_WIDE;
         mNumBlocksHigh = size.y / blockSize;
@@ -110,11 +107,11 @@ class SnakeGame extends SurfaceView implements Runnable{
     }
 
     public void newGame() {
+        gameState.startNewGame();
         mSnake.reset(NUM_BLOCKS_WIDE, mNumBlocksHigh);
         mApple.spawn();
-        mScore = 0;
         // Setup mNextFrameTime so an update can triggered
-        mNextFrameTime = System.currentTimeMillis();
+        //mNextFrameTime = System.currentTimeMillis();
     }
 
     private void showNameInput(final Context context) {
@@ -169,8 +166,8 @@ class SnakeGame extends SurfaceView implements Runnable{
 
     @Override
     public void run() {
-        while (mPlaying) {
-            if(!mPaused) {
+        while (gameState.getThreadRunning()) {
+            if(!gameState.getPaused()) {
                 // Update 10 times a second
                 if (updateRequired()) {
                     update();
@@ -203,14 +200,14 @@ class SnakeGame extends SurfaceView implements Runnable{
         // Check if the snake ate the apple
         if (mSnake.checkDinner(mApple.getLocation())) {
             mApple.spawn(2);
-            mScore++;
+            gameState.increaseScore();
             mSP.play(mEat_ID, 1, 1, 0, 0, 1); // Play the eating sound
         }
 
         // Check if snake died
         if (mSnake.detectDeath()) {
             mSP.play(mCrashID, 1, 1, 0, 0, 1); // Play the crash sound
-            mPaused = true;
+            gameState.pause();
 
             dramGameOver();
         }
@@ -248,17 +245,17 @@ class SnakeGame extends SurfaceView implements Runnable{
 
         String message;
         // Determine message based on high score status
-        if (mHighScore.isNewHighScore(mScore)) {
-            builder.setMessage("New High Score: " + mScore);
+        if (gameState.getScore()> gameState.getHighScore()) {
+            builder.setMessage("New High Score: " + gameState.getScore());
         } else {
-            builder.setMessage("Score: " + mScore);
+            builder.setMessage("Score: " + gameState.getScore());
         }
 
         builder.setPositiveButton("Play Again", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 resetGame();
-                mPaused = false; // Continue the game
+                gameState.resume(); // Continue the game
             }
         });
 
@@ -279,10 +276,10 @@ class SnakeGame extends SurfaceView implements Runnable{
     private void drawScore() {
         mPaint.setColor(Color.RED);
         mPaint.setTextSize(120);
-        mCanvas.drawText("" + mScore, 20, 120, mPaint);
+        mCanvas.drawText("" + gameState.getScore(), 20, 120, mPaint);
     }
     private void drawTapToPlay() {
-        if (mPaused) {
+        if (gameState.getPaused()) {
             mPaint.setColor(Color.BLUE);
             mPaint.setTextSize(220);
             mCanvas.drawText(getResources().
@@ -307,7 +304,7 @@ class SnakeGame extends SurfaceView implements Runnable{
         canvas.drawText("Pause", pauseButtonX + 30, pauseButtonY + 110, paint);
     }
     private void drawHighScore() {
-        int highScore = mHighScore.getHighScore();
+        int highScore = gameState.getHighScore();
         mPaint.setColor(Color.RED);
         mPaint.setTextSize(80);
         mCanvas.drawText("High Score: " + highScore, 20, 220, mPaint);
@@ -317,8 +314,8 @@ class SnakeGame extends SurfaceView implements Runnable{
         // Reset the snake to its initial position
         mSnake.reset(NUM_BLOCKS_WIDE, mNumBlocksHigh);
         mApple.spawn();
-        mScore = 0;
-        mPaused = true;
+        gameState.startNewGame();
+        newGame();
     }
 
     @Override
@@ -335,7 +332,7 @@ class SnakeGame extends SurfaceView implements Runnable{
         if (xTouchPosition >= left && xTouchPosition <= right &&
                 yTouchPosition >= top && yTouchPosition <= bottom &&
                 motionEvent.getAction() == MotionEvent.ACTION_UP) {
-            if (mPlaying) {
+            if (gameState.getThreadRunning()) {
                 pause();
             } else {
                 resume();
@@ -343,16 +340,16 @@ class SnakeGame extends SurfaceView implements Runnable{
             return true;
         }
 
-        if (!mPlaying) {
+        if (!gameState.getThreadRunning()) {
             return true;
         }
 
         switch (motionEvent.getAction() & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_UP:
-                if (mPaused) {
-                    mPaused = false;
+                if (gameState.getPaused()) {
+                    gameState.resume();
+                    gameState.startNewGame();
                     newGame();
-
                     // Don't want to process snake direction for this tap
                     return true;
                 }
@@ -370,7 +367,7 @@ class SnakeGame extends SurfaceView implements Runnable{
 
 
     public void pause() {
-        mPlaying = false;
+        gameState.stopThread();
         try {
             mThread.join();
         } catch (InterruptedException e) {
@@ -379,7 +376,7 @@ class SnakeGame extends SurfaceView implements Runnable{
 
 
     public void resume() {
-        mPlaying = true;
+        gameState.startThread();
         mThread = new Thread(this);
         mThread.start();
     }
