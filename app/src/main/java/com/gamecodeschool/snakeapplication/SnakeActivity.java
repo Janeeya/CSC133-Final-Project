@@ -8,24 +8,30 @@ import android.media.MediaPlayer;
 
 public class SnakeActivity extends Activity {
 
-    SnakeGame mSnakeGame;
-    MediaPlayer mediaPlayer;
+    private SnakeGame snakeGame;
+    private MediaPlayer mediaPlayer;
 
     // Set the game up
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        initializeGame();
+        initializeMediaPlayer();
+    }
+
+    private void initializeGame() {
         // Get the pixel dimensions of the screen
         Display display = getWindowManager().getDefaultDisplay();
 
         Point size = new Point();
         display.getSize(size);
 
-        mSnakeGame = new SnakeGame(this, size);
+        snakeGame = new SnakeGame(this, size);
+        setContentView(snakeGame);
+    }
 
-        setContentView(mSnakeGame);
-
+    private void initializeMediaPlayer() {
         mediaPlayer = MediaPlayer.create(this, R.raw.breezy);
         mediaPlayer.setLooping(true);
         mediaPlayer.start();
@@ -34,16 +40,20 @@ public class SnakeActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        mSnakeGame.resume();
+        resumeGame();
+    }
 
-
+    private void resumeGame() {
+        snakeGame.resume();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        mSnakeGame.pause();
+        pauseGame();
+    }
 
-
+    private void pauseGame() {
+        snakeGame.pause();
     }
 }
