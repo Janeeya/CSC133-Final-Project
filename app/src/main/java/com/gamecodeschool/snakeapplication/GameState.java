@@ -9,36 +9,36 @@ class GameState {
     private int score = 0;
     private HighScore highScore;
     private String playerName = "";
-    private static final String TAG = "GameState";
+    //private static final String TAG = "GameState";
 
     public GameState(Context context){
-        Log.d(TAG, "Initializing GameState");
+        //Log.d(TAG, "Initializing GameState");
         this.highScore = new HighScore(context);
     }
 
     public boolean isPlaying() {
-        Log.d(TAG, "isPlaying: " + playing);
+        //Log.d(TAG, "isPlaying: " + playing);
         return playing;
     }
 
     public boolean isPaused() {
-        Log.d(TAG, "isPaused: " + paused);
+        //Log.d(TAG, "isPaused: " + paused);
         return paused;
     }
 
     public void pause(){
         paused = true;
-        Log.d(TAG, "setPaused: " + true);
+        //Log.d(TAG, "setPaused: " + true);
     }
 
     public void resume(){
         paused = false;
-        Log.d(TAG, "setPaused: " + false);
+        //Log.d(TAG, "setPaused: " + false);
     }
 
     public void setPlaying(boolean playing) {
         this.playing = playing;
-        Log.d(TAG, "setPlaying: " + playing);
+        //Log.d(TAG, "setPlaying: " + playing);
     }
 
     public int getScore() {
@@ -73,12 +73,12 @@ class GameState {
     public void resetGame(){
         score = 0;
         paused = true;
-        Log.d(TAG, "resetGame");
+        //Log.d(TAG, "resetGame");
     }
 
     public void newGame(){
         score = 0;
-        Log.d(TAG, "resetGame");
+        //Log.d(TAG, "resetGame");
     }
 
     public String getPlayerName(){

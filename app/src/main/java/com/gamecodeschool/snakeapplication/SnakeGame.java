@@ -167,7 +167,7 @@ class SnakeGame extends SurfaceView implements Runnable{
 
     @Override
     public void run() {
-        Log.d(TAG, "Game loop started");
+        //Log.d(TAG, "Game loop started");
         while (gameState.isPlaying()) {
             if(!gameState.isPaused()) {
                 // Update 10 times a second
@@ -178,7 +178,7 @@ class SnakeGame extends SurfaceView implements Runnable{
             draw();
 
         }
-        Log.d(TAG, "Game loop ended");
+        //Log.d(TAG, "Game loop ended");
     }
 
     // Check to see if it is time for an update
@@ -199,7 +199,7 @@ class SnakeGame extends SurfaceView implements Runnable{
 
     // Inside the update() method
     public void update() {
-        Log.d(TAG, "Updating game state");
+        //Log.d(TAG, "Updating game state");
         mSnake.move();
 
         // Check if the snake ate the apple
@@ -218,7 +218,7 @@ class SnakeGame extends SurfaceView implements Runnable{
         }
     }
     public void draw() {
-        Log.d(TAG, "Drawing game state");
+        //Log.d(TAG, "Drawing game state");
         if (mSurfaceHolder.getSurface().isValid()) {
             mCanvas = mSurfaceHolder.lockCanvas();
             mCanvas.drawColor(Color.BLACK);
