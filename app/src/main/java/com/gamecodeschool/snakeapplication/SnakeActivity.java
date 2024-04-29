@@ -4,18 +4,20 @@ import android.app.Activity;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.view.Display;
-import android.media.MediaPlayer;
+
+
 
 public class SnakeActivity extends Activity {
-
+    BackgroundMusicStrategy musicPlayer;
     SnakeGame mSnakeGame;
-    MediaPlayer mediaPlayer;
+
+
 
     // Set the game up
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        musicPlayer = new BackgroundMusicStrategy(this);
         // Get the pixel dimensions of the screen
         Display display = getWindowManager().getDefaultDisplay();
 
@@ -25,10 +27,9 @@ public class SnakeActivity extends Activity {
         mSnakeGame = new SnakeGame(this, size);
 
         setContentView(mSnakeGame);
+        musicPlayer.startMusic();
 
-        mediaPlayer = MediaPlayer.create(this, R.raw.breezy);
-        mediaPlayer.setLooping(true);
-        mediaPlayer.start();
+
     }
 
     @Override
