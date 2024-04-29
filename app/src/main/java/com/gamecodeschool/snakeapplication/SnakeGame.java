@@ -107,7 +107,7 @@ class SnakeGame extends SurfaceView implements Runnable{
     }
 
     public void newGame() {
-        gameState.resetGame();
+        gameState.newGame();
         mSnake.reset(NUM_BLOCKS_WIDE, mNumBlocksHigh);
         mApple.spawn();
         // Setup mNextFrameTime so an update can triggered

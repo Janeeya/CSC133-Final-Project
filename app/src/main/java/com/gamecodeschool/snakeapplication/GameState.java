@@ -72,7 +72,12 @@ class GameState {
 
     public void resetGame(){
         score = 0;
-        //paused = true;
+        paused = true;
+        Log.d(TAG, "resetGame");
+    }
+
+    public void newGame(){
+        score = 0;
         Log.d(TAG, "resetGame");
     }
 
