@@ -11,10 +11,10 @@ import java.util.Random;
 class Apple extends GameObject implements IDrawable {
 
     // location of apple not in pixels
-    private Point location = new Point();
+    private final Point location = new Point();
 
-    private Point mSpawnRange;
-    private int mSize;
+    private final Point mSpawnRange;
+    private final int mSize;
 
     // An image to represent the apple
     private Bitmap mBitmapApple;
