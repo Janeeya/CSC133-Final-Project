@@ -35,6 +35,7 @@ import android.widget.Toast;
 class SnakeGame extends SurfaceView implements Runnable{
 
     private Thread mThread = null;
+    //private int mFPS = 10;
     private long mNextFrameTime;
     private SoundPool mSP;
     private int mEat_ID = -1;
@@ -184,13 +185,13 @@ class SnakeGame extends SurfaceView implements Runnable{
     // Check to see if it is time for an update
     public boolean updateRequired() {
 
-        final long TARGET_FPS = 10;
+        //final long TARGET_FPS = 10;
         final long MILLIS_PER_SECOND = 1000;
 
         if(mNextFrameTime <= System.currentTimeMillis()){
 
             mNextFrameTime =System.currentTimeMillis()
-                    + MILLIS_PER_SECOND / TARGET_FPS;
+                    + MILLIS_PER_SECOND / gameState.getmFPS();
 
             return true;
         }
