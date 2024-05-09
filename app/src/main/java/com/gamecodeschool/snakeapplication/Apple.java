@@ -10,56 +10,57 @@ import java.util.Random;
 
 class Apple extends GameObject implements IDrawable {
 
-    // location of apple not in pixels
-    private final Point location = new Point();
+    private Point location = new Point();
 
-    private final Point mSpawnRange;
-    private final int mSize;
+    private final Point spawnRange;
+    private final int size;
 
-    // An image to represent the apple
-    private Bitmap mBitmapApple;
+    // Apple image
+    private Bitmap bitmapApple;
 
-    Apple(Context context, Point sr, int s){
-        super(context, sr, s);
+    private static final int OFF_SCREEN_X = -10;
 
-        mSpawnRange = sr;
-        mSize = s;
-        // Hide the apple off-screen until the game starts
-        location.x = -10;
 
-        // Load the image to the bitmap
-        mBitmapApple = BitmapFactory.decodeResource(context.getResources(), R.drawable.croissant);
+    Apple(Context context, Point spawnRange, int size) {
+        super(context, spawnRange, size);
 
-        // Resize the bitmap
-        mBitmapApple = Bitmap.createScaledBitmap(mBitmapApple, s, s, false);
+        this.spawnRange = spawnRange;
+        this.size = size;
+        setLocation(new Point(OFF_SCREEN_X, 0));
+
+        bitmapApple = BitmapFactory.decodeResource(context.getResources(), R.drawable.croissant);
+        bitmapApple = Bitmap.createScaledBitmap(bitmapApple, size, size, false);
     }
 
-    // This is called every time an apple is eaten
+    //new apple at random location
+
     @Override
-    public void spawn(){
-        // Choose two random values and place the apple
+    public void spawn() {
         Random random = new Random();
-        location.x = random.nextInt(mSpawnRange.x) + 1;
-        location.y = random.nextInt(mSpawnRange.y - 1) + 1;
+        setLocation(new Point(random.nextInt(spawnRange.x) + 1, random.nextInt(spawnRange.y - 1) + 1));
     }
 
+    //Spawns multiple apples at random locations.
     public void spawn(int amount) {
         for (int i = 0; i < amount; i++) {
             spawn();
         }
     }
 
-    // Let SnakeGame know where the apple is
-    // SnakeGame can share this with the snake
-    Point getLocation(){
-        return location;
+    //Returns location of the apple
+    Point getLocation() {
+        return new Point(location.x, location.y);
     }
 
-    // Draw the apple
-    public void draw(Canvas canvas, Paint paint){
-        canvas.drawBitmap(mBitmapApple,
-                location.x * mSize, location.y * mSize, paint);
+    //Setting location of the apple
 
+    private void setLocation(Point location) {
+        this.location = location;
     }
 
+    // Draws the apple on the canvas.
+
+    public void draw(Canvas canvas, Paint paint) {
+        canvas.drawBitmap(bitmapApple, location.x * size, location.y * size, paint);
+    }
 }
