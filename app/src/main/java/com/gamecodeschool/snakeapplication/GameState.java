@@ -8,6 +8,7 @@ class GameState {
     private boolean playing = false;
     private int score = 0;
     private HighScore highScore;
+    private int mFPS = 10;
     private String playerName = "";
     //private static final String TAG = "GameState";
 
@@ -49,6 +50,8 @@ class GameState {
         this.score = score;
     }
 
+    public int getmFPS() { return mFPS; }
+
     public int getHighScore(){
         return highScore.getHighScore();
     }
@@ -68,6 +71,13 @@ class GameState {
 
     public void increaseScore(){
         score++;
+        if(score%2==0){
+            mFPS++;
+        }
+    }
+
+    public void setmFPS(int FPS){ //unused currently, but adds function for slowdown effect
+        this.mFPS = FPS;
     }
 
     public void resetGame(){
@@ -78,6 +88,7 @@ class GameState {
 
     public void newGame(){
         score = 0;
+        mFPS = 10;
         //Log.d(TAG, "resetGame");
     }
 
