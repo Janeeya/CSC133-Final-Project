@@ -215,7 +215,7 @@ class SnakeGame extends SurfaceView implements Runnable{
             mSP.play(mCrashID, 1, 1, 0, 0, 1); // Play the crash sound
             gameState.pause();
 
-            dramGameOver();
+            drawGameOver();
         }
     }
     public void draw() {
@@ -246,7 +246,7 @@ class SnakeGame extends SurfaceView implements Runnable{
             mSurfaceHolder.unlockCanvasAndPost(mCanvas);
         }
     }
-    private void dramGameOver() {
+    private void drawGameOver() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("Game Over");
 
