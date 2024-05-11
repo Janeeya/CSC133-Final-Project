@@ -8,7 +8,7 @@ import android.view.Display;
 
 
 public class SnakeActivity extends Activity {
-    BackgroundMusicStrategy musicPlayer;
+
     SnakeGame mSnakeGame;
 
 
@@ -17,7 +17,7 @@ public class SnakeActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        musicPlayer = new BackgroundMusicStrategy(this);
+
         // Get the pixel dimensions of the screen
         Display display = getWindowManager().getDefaultDisplay();
 
@@ -27,7 +27,7 @@ public class SnakeActivity extends Activity {
         mSnakeGame = new SnakeGame(this, size);
 
         setContentView(mSnakeGame);
-        musicPlayer.startMusic();
+
 
 
     }
