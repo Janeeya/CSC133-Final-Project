@@ -1,34 +1,52 @@
 package com.gamecodeschool.snakeapplication;
 
-import android.media.MediaPlayer;
 import android.content.Context;
-import android.app.Activity;
-import android.graphics.Point;
-import android.os.Bundle;
-import android.view.Display;
+import android.media.MediaPlayer;
 
-public class BackgroundMusicStrategy {
+public class BackgroundMusicStrategy implements IAudioStrategy {
+    private final MediaPlayer mediaPlayer;
 
-    private MediaPlayer mediaPlayer;
-    private Context context;
-
-    public BackgroundMusicStrategy(Context context){
+    public BackgroundMusicStrategy(Context context) {
         mediaPlayer = MediaPlayer.create(context, R.raw.breezy);
         mediaPlayer.setLooping(true);
     }
 
-    public void startMusic(){
-        if (mediaPlayer != null && !mediaPlayer.isPlaying()) {
-            mediaPlayer.start();
-        }
-    }
-    public void pauseMusic(){
-        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
-            mediaPlayer.pause();
+    @Override
+    public void apply(GameEventType eventType) {
+        switch (eventType) {
+            case START:
+                if (!mediaPlayer.isPlaying()) {
+                    mediaPlayer.start();
+                }
+                break;
+
+            case STOP:
+                if (mediaPlayer.isPlaying()) {
+                    mediaPlayer.pause();
+                    mediaPlayer.seekTo(0);
+                }
+                break;
+
+            case PAUSE:
+                if (mediaPlayer.isPlaying()) {
+                    mediaPlayer.pause();
+                }
+                break;
+
+            case RESUME:
+                if (!mediaPlayer.isPlaying()) {
+                    mediaPlayer.start();
+                }
+                break;
+
+            default:
+                break;
         }
     }
 
-    public boolean isMusicPlaying() {
-        return mediaPlayer != null && mediaPlayer.isPlaying();
+    public void release() {
+        if (mediaPlayer != null) {
+            mediaPlayer.release();
+        }
     }
 }
