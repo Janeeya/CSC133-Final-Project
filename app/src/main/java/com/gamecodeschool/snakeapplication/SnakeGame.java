@@ -16,7 +16,12 @@ import android.media.SoundPool;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.AbsoluteSizeSpan;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -27,7 +32,10 @@ import java.util.TimerTask;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -248,17 +256,47 @@ class SnakeGame extends SurfaceView implements Runnable{
     }
     private void drawGameOver() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle("Game Over");
 
-        String message;
+        TextView title = new TextView(getContext());
+        title.setText("Game Over");
+        title.setTextColor(Color.RED); // Set color to red
+        title.setTextSize(TypedValue.COMPLEX_UNIT_SP, 50); // Set larger font size
+        title.setTypeface(null, Typeface.BOLD); // Set bold style
+
+        builder.setCustomTitle(title);
+
         boolean isNewHighScore = gameState.isHighScore();
+        int score = gameState.getScore();
+        String scoreMessage;
         if (isNewHighScore) {
-            // If it's a new high score, update the high score and show a corresponding message
             gameState.setHighScore();
-            builder.setMessage("New High Score: " + gameState.getScore());
+            scoreMessage = "New High Score: " + score;
         } else {
-            builder.setMessage("Score: " + gameState.getScore());
+            scoreMessage = "Score: " + score;
         }
+
+        SpannableString spannableMessage = new SpannableString(scoreMessage);
+
+        int scoreIndex = scoreMessage.indexOf("Score");
+        int newHighScoreIndex = scoreMessage.indexOf("New High Score");
+
+        if (scoreIndex != -1) {
+            int fontSize = 75;
+            spannableMessage.setSpan(new AbsoluteSizeSpan(fontSize), scoreIndex, scoreIndex + "Score".length(), SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE);
+            spannableMessage.setSpan(new ForegroundColorSpan(Color.WHITE), scoreIndex, scoreIndex + "Score".length(), SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE);
+        } else if (newHighScoreIndex != -1) {
+            int fontSize = 75;
+            spannableMessage.setSpan(new AbsoluteSizeSpan(fontSize), newHighScoreIndex, newHighScoreIndex + "New High Score".length(), SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE);
+            spannableMessage.setSpan(new ForegroundColorSpan(Color.WHITE), newHighScoreIndex, newHighScoreIndex + "New High Score".length(), SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+
+        // Style score value
+        int scoreValueIndex = scoreMessage.indexOf(String.valueOf(score));
+        if (scoreValueIndex != -1) {
+            int fontSize = 75;
+            spannableMessage.setSpan(new AbsoluteSizeSpan(fontSize), scoreValueIndex, scoreValueIndex + String.valueOf(score).length(), SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+        builder.setMessage(spannableMessage);
 
         builder.setPositiveButton("Play Again", new DialogInterface.OnClickListener() {
             @Override
@@ -274,6 +312,7 @@ class SnakeGame extends SurfaceView implements Runnable{
                 ((Activity) getContext()).finish();
             }
         });
+        builder.setCancelable(false);
 
         ((Activity) getContext()).runOnUiThread(new Runnable() {
             @Override
@@ -282,6 +321,7 @@ class SnakeGame extends SurfaceView implements Runnable{
             }
         });
     }
+
     private void drawScore() {
         mPaint.setColor(Color.RED);
         mPaint.setTextSize(120);
@@ -315,8 +355,15 @@ class SnakeGame extends SurfaceView implements Runnable{
     private void drawHighScore() {
         mPaint.setColor(Color.RED);
         mPaint.setTextSize(80);
+
+        // Set a thicker stroke width for the paint
+        mPaint.setStyle(Paint.Style.STROKE);
+        mPaint.setStrokeWidth(7);
+
         mCanvas.drawText("High Score: " + gameState.getHighScore(), 20, 220, mPaint);
+        mPaint.setStyle(Paint.Style.FILL);
     }
+
 
     public void resetGame() {
         // Reset the snake to its initial position
