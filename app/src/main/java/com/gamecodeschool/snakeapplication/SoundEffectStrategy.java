@@ -6,14 +6,18 @@ import android.media.AudioManager;
 import android.media.SoundPool;
 
 public class SoundEffectStrategy implements IAudioStrategy {
-    private Context context;
+    private final Context context;
     private SoundPool soundPool;
     private int eatSoundId;
     private int crashSoundId;
 
     public SoundEffectStrategy(Context context) {
         this.context = context;
+        initSoundPool();
+        loadSounds();
+    }
 
+    private void initSoundPool() {
         AudioAttributes audioAttributes = new AudioAttributes.Builder()
                 .setUsage(AudioAttributes.USAGE_GAME)
                 .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
@@ -23,17 +27,26 @@ public class SoundEffectStrategy implements IAudioStrategy {
                 .setMaxStreams(5)
                 .setAudioAttributes(audioAttributes)
                 .build();
+    }
 
+    private void loadSounds() {
         eatSoundId = soundPool.load(context, R.raw.biscuit_bark, 1);
         crashSoundId = soundPool.load(context, R.raw.dog_death, 1);
     }
 
     @Override
     public void apply(GameEventType eventType) {
-        if (eventType == GameEventType.EAT) {
-            soundPool.play(eatSoundId, 1.0f, 1.0f, 1, 0, 1.0f);
-        } else if (eventType == GameEventType.CRASH) {
-            soundPool.play(crashSoundId, 1.0f, 1.0f, 1, 0, 1.0f);
+        playSound(eventType);
+    }
+
+    private void playSound(GameEventType eventType) {
+        switch (eventType) {
+            case EAT:
+                soundPool.play(eatSoundId, 1.0f, 1.0f, 1, 0, 1.0f);
+                break;
+            case CRASH:
+                soundPool.play(crashSoundId, 1.0f, 1.0f, 1, 0, 1.0f);
+                break;
         }
     }
 
