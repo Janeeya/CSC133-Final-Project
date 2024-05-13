@@ -74,7 +74,7 @@ class SnakeGame extends SurfaceView implements Runnable{
         mSurfaceHolder = getHolder();
         mPaint = new Paint();
         mTypeface = Typeface.createFromAsset(context.getAssets(), "lobstertwo_regular.ttf");
-
+        //gameState.demoFix(); //uncomment this for demo
         showNameInput(context);
         // Initialize the SoundPool
 

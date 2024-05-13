@@ -72,8 +72,8 @@ class GameState {
         }
     }
 
-    public void nullFix(){
-        highScore.setHighScoreOverride(0, "Austin");
+    public void demoFix(){ //this is only used in demo to make sure high score is beatable w/in 2-3 mins on dev machine
+        highScore.setHighScoreOverride(4, "BadGamer");
     }
     public void setHighScore(){
         highScore.setHighScore(this.score, playerName);
