@@ -85,7 +85,7 @@ class SnakeGame extends SurfaceView implements Runnable{
         mPaint.setTypeface(plain);
 
         mApple = new Apple(context,
-                new Point(NUM_BLOCKS_WIDE,
+                new Point(NUM_BLOCKS_WIDE-1,
                         mNumBlocksHigh),
                 blockSize);
 
@@ -95,7 +95,7 @@ class SnakeGame extends SurfaceView implements Runnable{
                 blockSize);
 
         mPowerUp = new PowerUp(context,
-                new Point(NUM_BLOCKS_WIDE,
+                new Point(NUM_BLOCKS_WIDE-1,
                         mNumBlocksHigh),
                 blockSize);
 
@@ -373,7 +373,7 @@ class SnakeGame extends SurfaceView implements Runnable{
         mPaint.setStyle(Paint.Style.STROKE);
         mPaint.setStrokeWidth(7);
 
-        mCanvas.drawText("High Score: " + gameState.getHighScore(), 20, 220, mPaint);
+        mCanvas.drawText("High Score - " + gameState.getHighScoreName() +": "+gameState.getHighScore(), 20, 260, mPaint);
         mPaint.setStyle(Paint.Style.FILL);
     }
 

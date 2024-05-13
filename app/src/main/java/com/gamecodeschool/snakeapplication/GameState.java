@@ -57,6 +57,8 @@ class GameState {
         return highScore.getHighScore();
     }
 
+    public String getHighScoreName(){ return highScore.getHighScoreName(); }
+
     public void slowmo(){
         poweredUp = 1;
         mFPS = mFPS/2;
@@ -70,8 +72,11 @@ class GameState {
         }
     }
 
+    public void nullFix(){
+        highScore.setHighScoreOverride(0, "Austin");
+    }
     public void setHighScore(){
-        highScore.setHighScore(this.score);
+        highScore.setHighScore(this.score, playerName);
     }
 
     public void increaseScore(){
@@ -102,7 +107,7 @@ class GameState {
         score = 0;
         mFPS = 10;
         poweredUp = 0;
-        //Log.d(TAG, "resetGame");
+        //Log.d(TAG, "newGame");
     }
 
     public String getPlayerName(){
