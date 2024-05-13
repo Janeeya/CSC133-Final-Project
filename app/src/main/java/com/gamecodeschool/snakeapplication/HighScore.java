@@ -25,7 +25,7 @@ public class HighScore {
     }
 
     public void setHighScore(int score, String name) {
-        if (score > mHighScore) {
+        if (isNewHighScore(score)) {
             SharedPreferences.Editor editor = mSharedPreferences.edit();
             editor.putInt(KEY_HIGH_SCORE, score);
             editor.apply();
@@ -40,7 +40,7 @@ public class HighScore {
             editor.apply();
             mHighScoreName = name;
     }
-
+    //Set HighScoreOverride is identical to setHighScore without checking if score is a new highscore
     public void setHighScoreOverride(int score, String name){
         SharedPreferences.Editor editor = mSharedPreferences.edit();
         editor.putInt(KEY_HIGH_SCORE, score);
