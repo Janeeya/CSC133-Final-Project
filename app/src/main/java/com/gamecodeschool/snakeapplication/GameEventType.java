@@ -7,5 +7,6 @@ public enum GameEventType {
     EAT,
     CRASH,
     PAUSE,
-    RESUME
+    RESUME,
+    POWERUP
 }

@@ -32,4 +32,5 @@ public class HighScore {
     public boolean isNewHighScore(int score) {
         return score > mHighScore;
     }
+
 }

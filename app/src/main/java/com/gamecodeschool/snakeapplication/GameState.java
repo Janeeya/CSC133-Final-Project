@@ -10,6 +10,7 @@ class GameState {
     private HighScore highScore;
     private int mFPS = 10;
     private String playerName = "";
+    private int poweredUp = 0;
     //private static final String TAG = "GameState";
 
     public GameState(Context context){
@@ -56,6 +57,10 @@ class GameState {
         return highScore.getHighScore();
     }
 
+    public void slowmo(){
+        poweredUp = 1;
+        mFPS = mFPS/2;
+    }
     public boolean isHighScore(){
         if(highScore.isNewHighScore(this.score)){
             return true;
@@ -72,7 +77,12 @@ class GameState {
     public void increaseScore(){
         score++;
         if(score%2==0){
-            mFPS++;
+            if(poweredUp<1) {
+                mFPS++;
+            }
+            else{
+                poweredUp--;
+            }
         }
     }
 
@@ -83,12 +93,15 @@ class GameState {
     public void resetGame(){
         score = 0;
         paused = true;
+        mFPS = 10;
+        poweredUp = 0;
         //Log.d(TAG, "resetGame");
     }
 
     public void newGame(){
         score = 0;
         mFPS = 10;
+        poweredUp = 0;
         //Log.d(TAG, "resetGame");
     }
 

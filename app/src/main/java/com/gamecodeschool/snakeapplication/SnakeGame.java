@@ -26,6 +26,7 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import java.io.IOException;
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -57,6 +58,7 @@ class SnakeGame extends SurfaceView implements Runnable{
     private Paint mPaint;
     private Snake mSnake;
     private Apple mApple;
+    private PowerUp mPowerUp;
     private Typeface plain = Typeface.createFromAsset(getContext().getAssets(), "lobstertwo_regular.ttf");
     private Typeface mTypeface;
     private GameState gameState;
@@ -91,6 +93,12 @@ class SnakeGame extends SurfaceView implements Runnable{
                 new Point(NUM_BLOCKS_WIDE,
                         mNumBlocksHigh),
                 blockSize);
+
+        mPowerUp = new PowerUp(context,
+                new Point(NUM_BLOCKS_WIDE,
+                        mNumBlocksHigh),
+                blockSize);
+
         soundEffectStrategy = new SoundEffectStrategy(context);
         backgroundMusicStrategy = new BackgroundMusicStrategy(context);
 
@@ -197,7 +205,18 @@ class SnakeGame extends SurfaceView implements Runnable{
         if (mSnake.checkDinner(mApple.getLocation())) {
             mApple.spawn(2);
             gameState.increaseScore();
+            if (new Random().nextInt(mPowerUp.getPowerUpChance()) == 0) {
+                mPowerUp.spawn(); //spawns power up randomly about 20% of the time
+                System.out.println("Powerup is spawning at coordinates (" + mPowerUp.getLocation().x + ", " + mPowerUp.getLocation().y + ")");
+            }
             soundEffectStrategy.apply(GameEventType.EAT);
+        }
+
+        if (mSnake.checkDinner(mPowerUp.getLocation())) {
+            //snake ate powerUp, so slow time for X frames
+            gameState.slowmo();
+            mPowerUp.powerUpRemove();
+            soundEffectStrategy.apply(GameEventType.POWERUP);
         }
 
         // Check if snake died
@@ -221,6 +240,7 @@ class SnakeGame extends SurfaceView implements Runnable{
             drawScore();
             mApple.draw(mCanvas, mPaint);
             mSnake.draw(mCanvas, mPaint);
+            mPowerUp.draw(mCanvas, mPaint);
 
             // Draw player's name at the top right corner
             mPaint.setColor(Color.BLUE);
@@ -232,6 +252,7 @@ class SnakeGame extends SurfaceView implements Runnable{
             drawPauseButton(mCanvas, mPaint);
 
             drawHighScore();
+            drawFPS();
             // Unlock the mCanvas and reveal the graphics for this frame
             mSurfaceHolder.unlockCanvasAndPost(mCanvas);
         }
@@ -434,5 +455,14 @@ class SnakeGame extends SurfaceView implements Runnable{
         // Release audio resources
         soundEffectStrategy.release();
         backgroundMusicStrategy.release();
+    }
+
+    private void drawFPS() {
+        Paint paint = new Paint();
+        paint.setColor(Color.WHITE);
+        paint.setTextSize(30);
+        paint.setTypeface(Typeface.DEFAULT_BOLD);
+        String fpsText = "FPS: " + gameState.getmFPS();
+        mCanvas.drawText(fpsText, mCanvas.getWidth() - 150, mCanvas.getHeight() - 20, paint);
     }
 }
