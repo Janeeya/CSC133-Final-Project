@@ -2,40 +2,25 @@ package com.gamecodeschool.snakeapplication;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.res.AssetFileDescriptor;
-import android.content.res.AssetManager;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
-import android.media.AudioAttributes;
-import android.media.AudioManager;
 import android.media.SoundPool;
-import android.os.Build;
-import android.os.Handler;
-import android.os.Looper;
-import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.AbsoluteSizeSpan;
 import android.text.style.ForegroundColorSpan;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import java.io.IOException;
 import java.util.Random;
-import java.util.Timer;
-import java.util.TimerTask;
-
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -77,7 +62,6 @@ class SnakeGame extends SurfaceView implements Runnable{
         //gameState.demoFix(); //uncomment this for demo
         showNameInput(context);
         // Initialize the SoundPool
-
 
         // Initialize the drawing objects
         mSurfaceHolder = getHolder();
@@ -133,7 +117,7 @@ class SnakeGame extends SurfaceView implements Runnable{
                 String playerName = input.getText().toString().trim();
                 if (!playerName.isEmpty()) {
                     gameState.setPlayerName(playerName);
-                    drawTapToPlay(); // Start the game logic
+                    drawTapToPlay();
                 } else {
                     Toast.makeText(context, "Please enter your name", Toast.LENGTH_SHORT).show();
                 }
@@ -166,7 +150,6 @@ class SnakeGame extends SurfaceView implements Runnable{
 
     @Override
     public void run() {
-        //Log.d(TAG, "Game loop started");
         while (gameState.isPlaying()) {
             if(!gameState.isPaused()) {
                 // Update 10 times a second
@@ -177,7 +160,6 @@ class SnakeGame extends SurfaceView implements Runnable{
             draw();
 
         }
-        //Log.d(TAG, "Game loop ended");
     }
 
     // Check to see if it is time for an update
@@ -260,7 +242,6 @@ class SnakeGame extends SurfaceView implements Runnable{
     private void drawGameOver() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 
-
         TextView title = new TextView(getContext());
         title.setText("Game Over");
         title.setTextColor(Color.RED); // Set color to red
@@ -296,7 +277,6 @@ class SnakeGame extends SurfaceView implements Runnable{
             spannableMessage.setSpan(new ForegroundColorSpan(Color.WHITE), newHighScoreIndex, newHighScoreIndex + "New High Score".length(), SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
 
-
         // Style score value
         int scoreValueIndex = scoreMessage.indexOf(String.valueOf(score));
         if (scoreValueIndex != -1) {
@@ -304,7 +284,6 @@ class SnakeGame extends SurfaceView implements Runnable{
             spannableMessage.setSpan(new AbsoluteSizeSpan(fontSize), scoreValueIndex, scoreValueIndex + String.valueOf(score).length(), SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
         builder.setMessage(spannableMessage);
-
 
         builder.setPositiveButton("Play Again", new DialogInterface.OnClickListener() {
             @Override
@@ -322,10 +301,7 @@ class SnakeGame extends SurfaceView implements Runnable{
         });
         builder.setCancelable(false);
 
-  
         backgroundMusicStrategy.apply(GameEventType.STOP);
-
- 
 
         ((Activity) getContext()).runOnUiThread(new Runnable() {
             @Override
@@ -376,7 +352,6 @@ class SnakeGame extends SurfaceView implements Runnable{
         mCanvas.drawText("High Score - " + gameState.getHighScoreName() +": "+gameState.getHighScore(), 20, 260, mPaint);
         mPaint.setStyle(Paint.Style.FILL);
     }
-
 
     public void resetGame() {
         // Reset the snake to its initial position
@@ -432,7 +407,6 @@ class SnakeGame extends SurfaceView implements Runnable{
         return true;
     }
 
-
     public void pause() {
         gameState.setPlaying(false);
         try {
@@ -442,7 +416,6 @@ class SnakeGame extends SurfaceView implements Runnable{
         backgroundMusicStrategy.apply(GameEventType.PAUSE);
 
     }
-
 
     public void resume() {
         gameState.setPlaying(true);
